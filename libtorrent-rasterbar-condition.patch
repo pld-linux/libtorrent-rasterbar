@@ -1,0 +1,10 @@
+--- libtorrent-rasterbar-0.13.1-orig/include/libtorrent/disk_io_thread.hpp	2008-04-09 10:48:02.000000000 +0200
++++ libtorrent-rasterbar-0.13.1/include/libtorrent/disk_io_thread.hpp	2008-08-31 10:48:47.000000000 +0200
+@@ -44,6 +44,7 @@
+ #include <boost/bind.hpp>
+ #include <boost/pool/pool.hpp>
+ #include <boost/noncopyable.hpp>
++#include <boost/thread/condition.hpp>
+ #include <list>
+ #include "libtorrent/config.hpp"
+ 
