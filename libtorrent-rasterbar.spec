@@ -107,9 +107,6 @@ find -type f -regex '.*\.[hc]pp' | xargs chmod a-x
 ## The RST files are the sources used to create the final HTML files; and are
 ## not needed.
 rm -f docs/*.rst
-## Fix the installed pkgconfig file: we don't need linkage that the
-## libtorrent DSO already takes care of.
-%{__sed} -i -e 's/^Libs:.*$/Libs: -L${libdir} -ltorrent/' libtorrent-rasterbar.pc.in
 
 %build
 %{__aclocal} -I m4
