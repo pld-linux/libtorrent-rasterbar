@@ -122,7 +122,7 @@ rm -f docs/*.rst
 	--with-boost-program-options=boost_program_options\
 	--with-{asio,zlib}=system
 
-%{__make}
+%{__make} LDFLAGS="-L%{_libdir}64 %{rpmldflags}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
