@@ -3,7 +3,7 @@ Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
 Version:	0.13.1
-Release:	2
+Release:	3
 License:	BSD
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libtorrent/%{name}-%{version}.tar.gz
@@ -57,8 +57,6 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	boost-devel
 Requires:	openssl-devel
-## Same pkgconfig file, and unsuffixed shared library symlink.:(
-Conflicts:	libtorrent-devel
 
 %description    devel
 The libtorrent-rasterbar-devel package contains libraries and header
