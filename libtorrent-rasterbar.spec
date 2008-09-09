@@ -17,7 +17,11 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	boost-devel >= 1.35.0
 BuildRequires:	libstdc++-devel
+BuildRequires:	libtool
+BuildRequires:	openssl-devel
 BuildRequires:	sed >= 4.0
+BuildRequires:	which
+BuildRequires:	util-linux-ng
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -112,13 +116,14 @@ rm -f docs/*.rst
 %{__autoconf}
 %{__automake}
 %configure \
-	--with-boost-system=boost_system\
-	--with-boost-date-time=boost_date_time\
-	--with-boost-filesystem=boost_filesystem\
-	--with-boost-thread=boost_thread\
-	--with-boost-regex=boost_regex\
-	--with-boost-program-options=boost_program_options\
-	--with-{asio,zlib}=system
+	--with-boost-system=boost_system \
+	--with-boost-date-time=boost_date_time \
+	--with-boost-filesystem=boost_filesystem \
+	--with-boost-thread=boost_thread \
+	--with-boost-regex=boost_regex \
+	--with-boost-program-options=boost_program_options \
+	--with-{asio,zlib}=system \
+	--enable-ssl
 
 %{__make} LDFLAGS="-L%{_libdir}64 %{rpmldflags}"
 
