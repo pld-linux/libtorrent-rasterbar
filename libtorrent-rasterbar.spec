@@ -19,6 +19,7 @@ BuildRequires:	sed >= 4.0
 BuildRequires:	which
 BuildRequires:	util-linux-ng
 BuildRequires:	zlib-devel
+Obsoletes:	rb_libtorrent
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -57,6 +58,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	boost-devel
 Requires:	openssl-devel
+Obsoletes:	rb_libtorrent-devel
 
 %description    devel
 The libtorrent-rasterbar-devel package contains libraries and header
@@ -83,6 +85,7 @@ Summary:	Static %{name} library
 Summary(pl.UTF-8):	Statyczna biblioteka %{name}
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
+Obsoletes:	rb_libtorrent-static
 
 %description static
 Static libtorrent-rasterbar library.
