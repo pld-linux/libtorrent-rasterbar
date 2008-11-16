@@ -2,23 +2,24 @@ Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
-Version:	0.13.1
-Release:	5
+Version:	0.14
+Release:	1
 License:	BSD
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libtorrent/%{name}-%{version}.tar.gz
-# Source0-md5:	9d6b112fedc5861402647ff72e95dba0
-Patch0:		%{name}-examples.patch
-## fix the build error with newest boost -- it will be fixed in the next libtorrent version
-Patch1:		%{name}-boost.patch
-Patch2:		%{name}-condition.patch
+# Source0-md5:	d4577ac07cff34b4a8202edc24383b8b
 URL:		http://www.rasterbar.com/products/libtorrent/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	boost-devel >= 1.35.0
 BuildRequires:	libstdc++-devel
+BuildRequires:	libtool
+BuildRequires:	openssl-devel
 BuildRequires:	sed >= 4.0
+BuildRequires:	which
+BuildRequires:	util-linux-ng
 BuildRequires:	zlib-devel
+Obsoletes:	rb_libtorrent
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -57,8 +58,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	boost-devel
 Requires:	openssl-devel
-## Same pkgconfig file, and unsuffixed shared library symlink.:(
-Conflicts:	libtorrent-devel
+Obsoletes:	rb_libtorrent-devel
 
 %description    devel
 The libtorrent-rasterbar-devel package contains libraries and header
@@ -85,6 +85,7 @@ Summary:	Static %{name} library
 Summary(pl.UTF-8):	Statyczna biblioteka %{name}
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
+Obsoletes:	rb_libtorrent-static
 
 %description static
 Static libtorrent-rasterbar library.
@@ -97,9 +98,7 @@ Statyczna biblioteka libtorrent-rasterbar.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+
 ## Some of the sources and docs are executable, which makes rpmlint against
 ## the resulting -debuginfo and -devel packages, respectively, quite angry. :]
 find src docs -type f | xargs chmod a-x
@@ -114,13 +113,13 @@ rm -f docs/*.rst
 %{__autoconf}
 %{__automake}
 %configure \
-	--with-boost-system=boost_system\
-	--with-boost-date-time=boost_date_time\
-	--with-boost-filesystem=boost_filesystem\
-	--with-boost-thread=boost_thread\
-	--with-boost-regex=boost_regex\
-	--with-boost-program-options=boost_program_options\
-	--with-{asio,zlib}=system
+	--with-boost-system=boost_system \
+	--with-boost-filesystem=boost_filesystem \
+	--with-boost-thread=boost_thread \
+	--with-boost-regex=boost_regex \
+	--with-boost-program-options=boost_program_options \
+	--with-{asio,zlib}=system \
+	--with-ssl
 
 %{__make} LDFLAGS="-L%{_libdir}64 %{rpmldflags}"
 
