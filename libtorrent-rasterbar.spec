@@ -2,12 +2,12 @@ Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
-Version:	0.14.1
+Version:	0.14.2
 Release:	2
 License:	BSD
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libtorrent/%{name}-%{version}.tar.gz
-# Source0-md5:	6aa0ed4da604b8b160bf12bcd41d5055
+# Source0-md5:	97bb2db5ac21e9a81c96fc0e2abe6d29
 URL:		http://www.rasterbar.com/products/libtorrent/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -16,8 +16,8 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	openssl-devel
 BuildRequires:	sed >= 4.0
-BuildRequires:	which
 BuildRequires:	util-linux-ng
+BuildRequires:	which
 BuildRequires:	zlib-devel
 Obsoletes:	rb_libtorrent
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -33,22 +33,23 @@ usage) as well as being very easy to use both as a user and developer.
 
 %description -l hu.UTF-8
 libtorrent-rasterbar egy C++ könyvtár, amely egy jó alternatívája
-kíván lenni az összes többi BitTorrent implementációjának. Ez "csak"
-egy könyvtár, és nem egy szolgáltatásgazdag kliens, habár ad egy
-működő példa-klienst.
+kíván lenni az összes többi BitTorrent implementációjának. Ez
+"csak" egy könyvtár, és nem egy szolgáltatásgazdag kliens, habár
+ad egy működő példa-klienst.
 
-A fő céljai, hogy nagyon hatékony legyen (CPU és memória-használat) és
-könnyű legyen használni mind a felhasználóknak, mind a fejlesztőknek.
+A fő céljai, hogy nagyon hatékony legyen (CPU és
+memória-használat) és könnyű legyen használni mind a
+felhasználóknak, mind a fejlesztőknek.
 
 %description -l pl.UTF-8
-libtorrent-rasterbar jest biblioteką napisaną w C++ która aspiruje do
-bycia dobrą alternatywą dla wszystkich innych implementacji
+libtorrent-rasterbar jest biblioteką napisaną w C++ która aspiruje
+do bycia dobrą alternatywą dla wszystkich innych implementacji
 BitTorrenta. Jest to biblioteka a nie pełnoprawny klient, jakkolwiek
 pakiet zawiera działającego przykładowego klienta.
 
 Główne cele biblioteki to bycie bardzo efektywną (w rozumieniu
-wykorzystania procesora i pamięci) jak również łatwą w użyciu zarówno
-dla użytkownika, jak i programisty.
+wykorzystania procesora i pamięci) jak również łatwą w użyciu
+zarówno dla użytkownika, jak i programisty.
 
 %package devel
 Summary:	Header files for %{name} library
@@ -78,7 +79,8 @@ Pakiet libtorrent-rasterbar-devel zawiera biblioteki i nagłówki do
 rozwijania aplikacji używających libtorrent-rasterbar.
 
 Różne pliki źródłowe i nagłówki dostarcozne z tym pakietem są
-licencjonowane pod zmienioną licencją BSD, zlib/libpng i Boost Public.
+licencjonowane pod zmienioną licencją BSD, zlib/libpng i Boost
+Public.
 
 %package static
 Summary:	Static %{name} library
