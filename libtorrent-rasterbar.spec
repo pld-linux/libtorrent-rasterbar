@@ -33,23 +33,22 @@ usage) as well as being very easy to use both as a user and developer.
 
 %description -l hu.UTF-8
 libtorrent-rasterbar egy C++ könyvtár, amely egy jó alternatívája
-kíván lenni az összes többi BitTorrent implementációjának. Ez
-"csak" egy könyvtár, és nem egy szolgáltatásgazdag kliens, habár
-ad egy működő példa-klienst.
+kíván lenni az összes többi BitTorrent implementációjának. Ez "csak"
+egy könyvtár, és nem egy szolgáltatásgazdag kliens, habár ad egy
+működő példa-klienst.
 
-A fő céljai, hogy nagyon hatékony legyen (CPU és
-memória-használat) és könnyű legyen használni mind a
-felhasználóknak, mind a fejlesztőknek.
+A fő céljai, hogy nagyon hatékony legyen (CPU és memória-használat) és
+könnyű legyen használni mind a felhasználóknak, mind a fejlesztőknek.
 
 %description -l pl.UTF-8
-libtorrent-rasterbar jest biblioteką napisaną w C++ która aspiruje
-do bycia dobrą alternatywą dla wszystkich innych implementacji
-BitTorrenta. Jest to biblioteka a nie pełnoprawny klient, jakkolwiek
+libtorrent-rasterbar jest napisaną w C++ biblioteką, która aspiruje do
+bycia dobrą alternatywą dla wszystkich innych implementacji
+BitTorrenta. Jest to biblioteka a nie pełnoprawny klient, aczkolwiek
 pakiet zawiera działającego przykładowego klienta.
 
 Główne cele biblioteki to bycie bardzo efektywną (w rozumieniu
-wykorzystania procesora i pamięci) jak również łatwą w użyciu
-zarówno dla użytkownika, jak i programisty.
+wykorzystania procesora i pamięci) jak również łatwą w użyciu zarówno
+dla użytkownika, jak i programisty.
 
 %package devel
 Summary:	Header files for %{name} library
@@ -78,9 +77,9 @@ alkalmazásokat fejleszthetsz.
 Pakiet libtorrent-rasterbar-devel zawiera biblioteki i nagłówki do
 rozwijania aplikacji używających libtorrent-rasterbar.
 
-Różne pliki źródłowe i nagłówki dostarcozne z tym pakietem są
-licencjonowane pod zmienioną licencją BSD, zlib/libpng i Boost
-Public.
+Różne pliki źródłowe i nagłówki dostarczone z tym pakietem są
+licencjonowane pod zmienioną licencją BSD, zlib/libpng i Boost Public
+License.
 
 %package static
 Summary:	Static %{name} library
