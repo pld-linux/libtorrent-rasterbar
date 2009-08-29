@@ -3,11 +3,12 @@ Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
 Version:	0.14.5
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libtorrent/%{name}-%{version}.tar.gz
 # Source0-md5:	46734b7c1a7ac81e6a8bc10011c645d1
+Patch0:		%{name}-c++.patch
 URL:		http://www.rasterbar.com/products/libtorrent/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -99,6 +100,7 @@ Statyczna biblioteka libtorrent-rasterbar.
 
 %prep
 %setup -q
+%patch0 -p1
 %{__sed} -i 's/ACLOCAL_AMFLAGS = -I m4/#ACLOCAL_AMFLAGS = -I m4/' Makefile.am
 
 ## Some of the sources and docs are executable, which makes rpmlint against
