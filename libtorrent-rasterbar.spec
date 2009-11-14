@@ -3,18 +3,23 @@ Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
 Version:	0.14.6
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libtorrent/%{name}-%{version}.tar.gz
 # Source0-md5:	1b5b91a5d0abb8cefef9f4195738e621
 URL:		http://www.rasterbar.com/products/libtorrent/
+Patch0:		bashizm.patch
+BuildRequires:	GeoIP-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	boost-devel >= 1.35.0
+BuildRequires:	boost-python-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	openssl-devel
+BuildRequires:	pkgconfig >= 1:0.20
+BuildRequires:	python-devel
 BuildRequires:	sed >= 4.0
 BuildRequires:	util-linux-ng
 BuildRequires:	which
@@ -97,8 +102,17 @@ Statikus libtorrent-rasterbar könyvtár.
 %description static -l pl.UTF-8
 Statyczna biblioteka libtorrent-rasterbar.
 
+%package -n python-libtorrent-rasterbar
+Summary:	Python bindings for libtorrent-rasterbar
+Group:		Libraries/Python
+Requires:	%{name} = %{version}-%{release}
+
+%description -n python-libtorrent-rasterbar
+Python bindings for libtorrent-rasterbar.
+
 %prep
 %setup -q
+%patch0 -p1
 %{__sed} -i 's/ACLOCAL_AMFLAGS = -I m4/#ACLOCAL_AMFLAGS = -I m4/' Makefile.am
 
 ## Some of the sources and docs are executable, which makes rpmlint against
@@ -115,12 +129,15 @@ rm -f docs/*.rst
 %{__autoconf}
 %{__automake}
 %configure \
+	--enable-python-binding \
 	--with-boost-system=boost_system \
 	--with-boost-filesystem=boost_filesystem \
 	--with-boost-thread=boost_thread \
 	--with-boost-regex=boost_regex \
 	--with-boost-program-options=boost_program_options \
-	--with-{asio,zlib}=system \
+	--with-asio=system \
+	--with-zlib=system \
+	--with-libgeoip=system \
 	--with-ssl
 
 %{__make} LDFLAGS="-L%{_libdir}64 %{rpmldflags}"
@@ -158,3 +175,7 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libtorrent-rasterbar.a
+
+%files -n python-libtorrent-rasterbar
+%{py_sitedir}/libtorrent.so
+%{py_sitedir}/python_libtorrent-*.egg-info
