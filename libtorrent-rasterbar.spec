@@ -6,7 +6,7 @@ Version:	0.14.7
 Release:	1
 License:	BSD
 Group:		Libraries
-Source0:	http://dl.sourceforge.net/libtorrent/%{name}-%{version}.tar.gz
+Source0:	http://downloads.sourceforge.net/libtorrent/%{name}-%{version}.tar.gz
 # Source0-md5:	6959f719245d82758235fd73d93373b2
 URL:		http://www.rasterbar.com/products/libtorrent/
 Patch0:		bashizm.patch
@@ -177,5 +177,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libtorrent-rasterbar.a
 
 %files -n python-libtorrent-rasterbar
+%defattr(644,root,root,755)
 %{py_sitedir}/libtorrent.so
 %{py_sitedir}/python_libtorrent-*.egg-info
