@@ -20,6 +20,8 @@ BuildRequires:	libtool
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig >= 1:0.20
 BuildRequires:	python-devel
+BuildRequires:	python-modules
+BuildRequires:	rpm-pythonprov
 BuildRequires:	sed >= 4.0
 BuildRequires:	util-linux-ng
 BuildRequires:	which
@@ -129,6 +131,7 @@ rm -f docs/*.rst
 %{__autoconf}
 %{__automake}
 %configure \
+	LIBS="-lpthread" \
 	--enable-python-binding \
 	--with-boost-system=boost_system \
 	--with-boost-filesystem=boost_filesystem \
@@ -140,7 +143,7 @@ rm -f docs/*.rst
 	--with-libgeoip=system \
 	--with-ssl
 
-%{__make} LDFLAGS="-L%{_libdir}64 %{rpmldflags}"
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
