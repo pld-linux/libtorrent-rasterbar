@@ -131,7 +131,7 @@ rm -f docs/*.rst
 %{__autoconf}
 %{__automake}
 %configure \
-	LIBS="-lpthread" \
+	LIBS="-lpthread -lrt" \
 	--enable-python-binding \
 	--with-boost-system=boost_system \
 	--with-boost-filesystem=boost_filesystem \
