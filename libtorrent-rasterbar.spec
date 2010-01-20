@@ -1,3 +1,6 @@
+#
+# TODO: make it builds on 64 bits
+#
 Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
