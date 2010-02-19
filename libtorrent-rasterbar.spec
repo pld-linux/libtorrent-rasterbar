@@ -5,12 +5,12 @@ Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
-Version:	0.14.8
+Version:	0.14.9
 Release:	1
 License:	BSD
 Group:		Libraries
 Source0:	http://libtorrent.googlecode.com/files/%{name}-%{version}.tar.gz
-# Source0-md5:	3fae9934b74e2ddf2c50c1f0ec320d75
+# Source0-md5:	7a7d802783731c1028ac3f22038be61a
 URL:		http://www.rasterbar.com/products/libtorrent/
 Patch0:		bashizm.patch
 BuildRequires:	GeoIP-devel
