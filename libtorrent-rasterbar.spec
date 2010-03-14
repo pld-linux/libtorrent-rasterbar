@@ -6,7 +6,7 @@ Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
 Version:	0.14.9
-Release:	3
+Release:	4
 License:	BSD
 Group:		Libraries
 Source0:	http://libtorrent.googlecode.com/files/%{name}-%{version}.tar.gz
@@ -136,6 +136,7 @@ rm -f docs/*.rst
 %configure \
 	LIBS="-lpthread -lrt" \
 	--enable-python-binding \
+	--with-boost-libdir=%{_libdir} \
 	--with-boost-system=boost_system \
 	--with-boost-filesystem=boost_filesystem \
 	--with-boost-thread=boost_thread \
