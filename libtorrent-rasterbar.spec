@@ -3,13 +3,14 @@ Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
 Version:	0.15.0
-Release:	2
+Release:	3
 License:	BSD
 Group:		Libraries
 Source0:	http://libtorrent.googlecode.com/files/%{name}-%{version}.tar.gz
 # Source0-md5:	3f8253457557a3f4778fa18fa076c5c9
 URL:		http://www.rasterbar.com/products/libtorrent/
 Patch0:		bashizm.patch
+Patch1:		disable-valloc.patch
 BuildRequires:	GeoIP-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -115,6 +116,7 @@ Python bindings for libtorrent-rasterbar.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 %{__sed} -i 's/ACLOCAL_AMFLAGS = -I m4/#ACLOCAL_AMFLAGS = -I m4/' Makefile.am
 
 ## Some of the sources and docs are executable, which makes rpmlint against
