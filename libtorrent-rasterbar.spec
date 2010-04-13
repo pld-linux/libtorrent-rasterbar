@@ -3,7 +3,7 @@ Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
 Version:	0.14.10
-Release:	2
+Release:	3
 Epoch:		1
 License:	BSD
 Group:		Libraries
@@ -63,7 +63,7 @@ Summary:	Header files for %{name} library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki %{name}
 License:	BSD, zlib/libpng License, Boost Software License
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	boost-devel
 Requires:	openssl-devel
 Obsoletes:	rb_libtorrent-devel
@@ -93,7 +93,7 @@ License.
 Summary:	Static %{name} library
 Summary(pl.UTF-8):	Statyczna biblioteka %{name}
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 Obsoletes:	rb_libtorrent-static
 
 %description static
@@ -108,7 +108,7 @@ Statyczna biblioteka libtorrent-rasterbar.
 %package -n python-libtorrent-rasterbar
 Summary:	Python bindings for libtorrent-rasterbar
 Group:		Libraries/Python
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description -n python-libtorrent-rasterbar
 Python bindings for libtorrent-rasterbar.
