@@ -25,7 +25,7 @@ BuildRequires:	python-devel
 BuildRequires:	python-modules
 BuildRequires:	rpm-pythonprov
 BuildRequires:	sed >= 4.0
-BuildRequires:	util-linux-ng
+BuildRequires:	util-linux
 BuildRequires:	which
 BuildRequires:	zlib-devel
 Obsoletes:	rb_libtorrent
