@@ -2,13 +2,13 @@ Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
-Version:	0.15.5
+Version:	0.15.6
 Release:	1
 Epoch:		1
 License:	BSD
 Group:		Libraries
 Source0:	http://libtorrent.googlecode.com/files/%{name}-%{version}.tar.gz
-# Source0-md5:	f1504a619e876c2731ee9a6b7d19cb1d
+# Source0-md5:	53c64fe121c7fd0383f90dc653930f4a
 URL:		http://www.rasterbar.com/products/libtorrent/
 Patch0:		bashizm.patch
 Patch1:		py27.patch
@@ -126,7 +126,7 @@ find src docs -type f | xargs chmod a-x
 find -type f -regex '.*\.[hc]pp' | xargs chmod a-x
 ## The RST files are the sources used to create the final HTML files; and are
 ## not needed.
-rm -f docs/*.rst
+%{__rm} docs/*.rst
 
 %build
 %{__libtoolize}
