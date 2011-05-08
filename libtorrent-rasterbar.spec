@@ -3,7 +3,7 @@ Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
 Version:	0.15.6
-Release:	2
+Release:	3
 Epoch:		1
 License:	BSD
 Group:		Libraries
@@ -11,14 +11,13 @@ Source0:	http://libtorrent.googlecode.com/files/%{name}-%{version}.tar.gz
 # Source0-md5:	53c64fe121c7fd0383f90dc653930f4a
 URL:		http://www.rasterbar.com/products/libtorrent/
 Patch0:		bashizm.patch
-Patch1:		py27.patch
 BuildRequires:	GeoIP-devel
-BuildRequires:	autoconf
-BuildRequires:	automake
+BuildRequires:	autoconf >= 2.63
+BuildRequires:	automake >= 1:1.11
 BuildRequires:	boost-devel >= 1.35.0
 BuildRequires:	boost-python-devel
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool
+BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig >= 1:0.20
 BuildRequires:	python-devel
@@ -108,17 +107,19 @@ Statyczna biblioteka libtorrent-rasterbar.
 
 %package -n python-libtorrent-rasterbar
 Summary:	Python bindings for libtorrent-rasterbar
+Summary(pl.UTF-8):	Wiązania Pythona do biblioteki libtorrent-rasterbar
 Group:		Libraries/Python
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description -n python-libtorrent-rasterbar
 Python bindings for libtorrent-rasterbar.
 
+%description -n python-libtorrent-rasterbar -l pl.UTF-8
+Wiązania Pythona do biblioteki libtorrent-rasterbar.
+
 %prep
 %setup -q
-# %patch0 -p1
-# %patch1 -p1
-%{__sed} -i 's/ACLOCAL_AMFLAGS = -I m4/#ACLOCAL_AMFLAGS = -I m4/' Makefile.am
+%patch0 -p1
 
 ## Some of the sources and docs are executable, which makes rpmlint against
 ## the resulting -debuginfo and -devel packages, respectively, quite angry. :]
@@ -135,6 +136,7 @@ find -type f -regex '.*\.[hc]pp' | xargs chmod a-x
 %{__automake}
 %configure \
 	LIBS="-lpthread -lrt" \
+	--disable-silent-rules \
 	--enable-python-binding \
 	--with-boost-libdir=%{_libdir} \
 	--with-boost-system=boost_system \
@@ -151,14 +153,9 @@ find -type f -regex '.*\.[hc]pp' | xargs chmod a-x
 
 %install
 rm -rf $RPM_BUILD_ROOT
-## Ensure that we preserve our timestamps properly.
-#export CPPROG="%{__cp} -p"
-#make install DESTDIR=$RPM_BUILD_ROOT INSTALL="%{__install} -c -p"
+
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
-
-## Do the renaming due to the somewhat limited %{_bindir} namespace.
-rename client torrent_client $RPM_BUILD_ROOT%{_bindir}/*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -169,7 +166,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog COPYING README
-%attr(755,root,root) %{_libdir}/libtorrent-rasterbar.so*
+%attr(755,root,root) %{_libdir}/libtorrent-rasterbar.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtorrent-rasterbar.so.6
 
 %files devel
 %defattr(644,root,root,755)
@@ -185,5 +183,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n python-libtorrent-rasterbar
 %defattr(644,root,root,755)
-%{py_sitedir}/libtorrent.so
+%attr(755,root,root) %{py_sitedir}/libtorrent.so
 %{py_sitedir}/python_libtorrent-*.egg-info
