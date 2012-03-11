@@ -1,0 +1,2 @@
+- use |xargs, calls chmod with multiple args
+- no macros in %description help adapter to wrap the same in resulting package
