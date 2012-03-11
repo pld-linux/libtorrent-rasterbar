@@ -1,0 +1,2 @@
+- alternative libtorrent implementation
+- needs some checkup and fixes in boost to compile
