@@ -13,14 +13,14 @@ URL:		http://www.rasterbar.com/products/libtorrent/
 BuildRequires:	GeoIP-devel
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
-BuildRequires:	boost-devel >= 1.35.0
-BuildRequires:	boost-python-devel
+BuildRequires:	boost-devel >= 1.36
+BuildRequires:	boost-python-devel >= 1.36
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig >= 1:0.20
-BuildRequires:	python-devel
-BuildRequires:	python-modules
+BuildRequires:	python-devel >= 1:2.4
+BuildRequires:	python-modules >= 1:2.4
 BuildRequires:	rpm-pythonprov
 BuildRequires:	sed >= 4.0
 BuildRequires:	util-linux
