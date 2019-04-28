@@ -7,12 +7,13 @@ Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
 Version:	1.0.11
-Release:	2
+Release:	3
 Epoch:		2
 License:	BSD
 Group:		Libraries
 Source0:	https://github.com/arvidn/libtorrent/releases/download/libtorrent-%{tagver}/%{name}-%{version}.tar.gz
 # Source0-md5:	f49e43286a64e8bbdef9ea59baa78b55
+Patch0:		%{name}-boost.patch
 URL:		http://www.rasterbar.com/products/libtorrent/
 BuildRequires:	GeoIP-devel
 BuildRequires:	autoconf >= 2.63
@@ -122,6 +123,7 @@ Wiązania Pythona do biblioteki libtorrent-rasterbar.
 
 %prep
 %setup -q
+%patch0 -p1
 
 ## Some of the sources and docs are executable, which makes rpmlint against
 ## the resulting -debuginfo and -devel packages, respectively, quite angry. :]
