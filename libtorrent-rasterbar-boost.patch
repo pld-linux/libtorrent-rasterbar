@@ -1,26 +1,8 @@
---- libtorrent-rasterbar-1.0.11/include/libtorrent/io_service_fwd.hpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/include/libtorrent/io_service_fwd.hpp	2019-04-27 18:33:00.466416145 +0200
-@@ -56,7 +56,11 @@
- #endif
- namespace asio {
- 
-+#if BOOST_VERSION >= 107000
-+class io_context;
-+#else
- class io_service;
-+#endif
- 
- }
- #if BOOST_VERSION >= 103500
-@@ -68,9 +72,20 @@
- 
- #if BOOST_VERSION < 103500
- 	typedef ::asio::io_service io_service;
--#else
-+#elif BOOST_VERSION < 107000
+--- libtorrent-rasterbar-1.1.11/include/libtorrent/io_service_fwd.hpp.orig	2018-11-18 13:55:50.000000000 +0100
++++ libtorrent-rasterbar-1.1.11/include/libtorrent/io_service_fwd.hpp	2019-04-28 16:31:24.497229017 +0200
+@@ -69,6 +69,15 @@
+ #else
  	typedef boost::asio::io_service io_service;
-+#else
-+	typedef boost::asio::io_context io_service;
  #endif
 +
 +#if BOOST_VERSION >= 107000
@@ -34,17 +16,16 @@
  }
  
  #endif
---- libtorrent-rasterbar-1.0.11/include/libtorrent/io_service.hpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/include/libtorrent/io_service.hpp	2019-04-27 18:52:30.230944932 +0200
-@@ -62,15 +62,7 @@
+--- libtorrent-rasterbar-1.1.11/include/libtorrent/io_service.hpp.orig	2019-04-28 16:35:33.779211874 +0200
++++ libtorrent-rasterbar-1.1.11/include/libtorrent/io_service.hpp	2019-04-28 16:35:38.492519673 +0200
+@@ -58,14 +58,7 @@
  #undef Protocol
  #endif
  
 -namespace libtorrent
 -{
--
--#if BOOST_VERSION < 103500
--	typedef ::asio::io_service io_service;
+-#if defined TORRENT_BUILD_SIMULATOR
+-	typedef sim::asio::io_service io_service;
 -#else
 -	typedef boost::asio::io_service io_service;
 -#endif
@@ -64,48 +45,9 @@
  
  	private:
  	
---- libtorrent-rasterbar-1.0.11/include/libtorrent/ip_filter.hpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/include/libtorrent/ip_filter.hpp	2019-04-27 19:12:31.020447681 +0200
-@@ -41,7 +41,7 @@
- #endif
- 
- #include <boost/limits.hpp>
--#include <boost/utility.hpp>
-+#include <boost/next_prior.hpp>
- #include <boost/tuple/tuple.hpp>
- 
- #ifdef _MSC_VER
---- libtorrent-rasterbar-1.0.11/include/libtorrent/proxy_base.hpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/include/libtorrent/proxy_base.hpp	2019-04-27 21:18:33.689487409 +0200
-@@ -33,6 +33,8 @@
- #ifndef TORRENT_PROXY_BASE_HPP_INCLUDED
- #define TORRENT_PROXY_BASE_HPP_INCLUDED
- 
-+#include <boost/noncopyable.hpp>
-+
- #include "libtorrent/io.hpp"
- #include "libtorrent/io_service_fwd.hpp"
- #include "libtorrent/socket.hpp"
-@@ -120,6 +122,18 @@
- 	}
- 
- #ifndef BOOST_NO_EXCEPTIONS
-+	void non_blocking(bool b)
-+	{
-+		m_sock.non_blocking(b);
-+	}
-+#endif
-+
-+	error_code non_blocking(bool b, error_code& ec)
-+	{
-+		return m_sock.non_blocking(b, ec);
-+	}
-+
-+#ifndef BOOST_NO_EXCEPTIONS
- 	template <class SettableSocketOption>
- 	void set_option(SettableSocketOption const& opt)
- 	{
-@@ -224,7 +238,7 @@
+--- libtorrent-rasterbar-1.1.11/include/libtorrent/proxy_base.hpp.orig	2017-02-04 19:16:33.000000000 +0100
++++ libtorrent-rasterbar-1.1.11/include/libtorrent/proxy_base.hpp	2019-04-27 21:18:33.689487409 +0200
+@@ -250,7 +250,7 @@
  
  	io_service& get_io_service()
  	{
@@ -114,211 +56,89 @@
  	}
  
  	lowest_layer_type& lowest_layer()
---- libtorrent-rasterbar-1.0.11/include/libtorrent/utp_stream.hpp.orig	2019-04-27 19:51:01.718044372 +0200
-+++ libtorrent-rasterbar-1.0.11/include/libtorrent/utp_stream.hpp	2019-04-28 07:56:43.495663332 +0200
-@@ -179,6 +179,11 @@
- 	typedef stream_socket::endpoint_type endpoint_type;
- 	typedef stream_socket::protocol_type protocol_type;
- 
-+#if BOOST_VERSION >= 106600
-+	using executor_type = tcp::socket::executor_type;
-+	executor_type get_executor() { return m_io_service.get_executor(); }
-+#endif
-+
- 	explicit utp_stream(asio::io_service& io_service);
- 	~utp_stream();
- 
-@@ -197,6 +202,12 @@
- 	void io_control(IO_Control_Command& ioc, error_code& ec) {}
- 
- #ifndef BOOST_NO_EXCEPTIONS
-+	void non_blocking(bool) {}
-+#endif
-+
-+	error_code non_blocking(bool, error_code&) { return error_code(); }
-+
-+#ifndef BOOST_NO_EXCEPTIONS
- 	void bind(endpoint_type const& /*endpoint*/) {}
- #endif
- 
-@@ -304,8 +315,13 @@
- 			return;
- 		}
- 		int bytes_added = 0;
-+#if BOOST_VERSION >= 106600
-+		for (auto i = buffer_sequence_begin(buffers)
-+			, end(buffer_sequence_end(buffers)); i != end; ++i)
-+#else
- 		for (typename Mutable_Buffers::const_iterator i = buffers.begin()
- 			, end(buffers.end()); i != end; ++i)
-+#endif
- 		{
- 			if (buffer_size(*i) == 0) continue;
- 			using asio::buffer_cast;
-@@ -355,8 +371,13 @@
- 		size_t buf_size = 0;
- #endif
- 
-+#if BOOST_VERSION >= 106600
-+		for (auto i = buffer_sequence_begin(buffers)
-+			, end(buffer_sequence_end(buffers)); i != end; ++i)
-+#else
- 		for (typename Mutable_Buffers::const_iterator i = buffers.begin()
- 			, end(buffers.end()); i != end; ++i)
-+#endif
- 		{
- 			using asio::buffer_cast;
- 			using asio::buffer_size;
-@@ -424,8 +445,13 @@
- 		}
- 
- 		int bytes_added = 0;
-+#if BOOST_VERSION >= 106600
-+		for (auto i = buffer_sequence_begin(buffers)
-+			, end(buffer_sequence_end(buffers)); i != end; ++i)
-+#else
- 		for (typename Const_Buffers::const_iterator i = buffers.begin()
- 			, end(buffers.end()); i != end; ++i)
-+#endif
- 		{
- 			if (buffer_size(*i) == 0) continue;
- 			using asio::buffer_cast;
---- libtorrent-rasterbar-1.0.11/include/libtorrent/socket_type.hpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/include/libtorrent/socket_type.hpp	2019-04-27 21:02:31.469139768 +0200
-@@ -253,6 +253,14 @@
- 		error_code set_option(SettableSocketOption const& opt, error_code& ec)
- 		{ TORRENT_SOCKTYPE_FORWARD_RET(set_option(opt, ec), ec) }
- 
-+		void non_blocking(bool b, error_code& ec)
-+		{ TORRENT_SOCKTYPE_FORWARD(non_blocking(b, ec)) }
-+
-+#ifndef BOOST_NO_EXCEPTIONS
-+		void non_blocking(bool b)
-+		{ TORRENT_SOCKTYPE_FORWARD(non_blocking(b)) }
-+#endif
-+
- #ifndef BOOST_NO_EXCEPTIONS
- 		template <class GettableSocketOption>
- 		void get_option(GettableSocketOption& opt)
---- libtorrent-rasterbar-1.0.11/include/libtorrent/ssl_stream.hpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/include/libtorrent/ssl_stream.hpp	2019-04-27 22:08:00.818063276 +0200
-@@ -180,6 +180,13 @@
- 		m_sock.next_layer().io_control(ioc, ec);
- 	}
- 
-+#ifndef BOOST_NO_EXCEPTIONS
-+	void non_blocking(bool b) { m_sock.next_layer().non_blocking(b); }
-+#endif
-+
-+	error_code non_blocking(bool b, error_code& ec)
-+	{ return m_sock.next_layer().non_blocking(b, ec); }
-+
- 	template <class Const_Buffers, class Handler>
- 	void async_write_some(Const_Buffers const& buffers, Handler const& handler)
- 	{
---- libtorrent-rasterbar-1.0.11/include/libtorrent/udp_socket.hpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/include/libtorrent/udp_socket.hpp	2019-04-28 14:54:50.645400897 +0200
+--- libtorrent-rasterbar-1.1.11/include/libtorrent/udp_socket.hpp.orig	2019-04-28 17:14:01.486709949 +0200
++++ libtorrent-rasterbar-1.1.11/include/libtorrent/udp_socket.hpp	2019-04-28 17:34:30.006721152 +0200
 @@ -80,7 +80,7 @@
- #endif
- 				;
- 		}
+ 		};
+ 
+ 		bool is_open() const { return m_abort == false; }
 -		io_service& get_io_service() { return m_ipv4_sock.get_io_service(); }
 +		io_service& get_io_service() { return libtorrent::get_io_service(m_ipv4_sock); }
  
  		void subscribe(udp_socket_observer* o);
  		void unsubscribe(udp_socket_observer* o);
---- libtorrent-rasterbar-1.0.11/src/connection_queue.cpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/src/connection_queue.cpp	2019-04-27 19:52:27.965889691 +0200
-@@ -103,7 +103,7 @@
+--- libtorrent-rasterbar-1.1.11/src/http_connection.cpp.orig	2019-04-28 17:34:49.723281005 +0200
++++ libtorrent-rasterbar-1.1.11/src/http_connection.cpp	2019-04-28 19:21:25.738630816 +0200
+@@ -150,7 +150,7 @@
  
- 		if (m_num_connecting < m_half_open_limit
- 			|| m_half_open_limit == 0)
--			m_timer.get_io_service().post(boost::bind(
-+			libtorrent::get_io_service(m_timer).post(boost::bind(
- 				&connection_queue::on_try_connect, this));
+ 	if (ec)
+ 	{
+-		m_timer.get_io_service().post(boost::bind(&http_connection::callback
++		libtorrent::get_io_service(m_timer).post(boost::bind(&http_connection::callback
+ 			, me, ec, static_cast<char*>(NULL), 0));
+ 		return;
  	}
- 
-@@ -125,7 +125,7 @@
- 
- 		if (m_num_connecting < m_half_open_limit
- 			|| m_half_open_limit == 0)
--			m_timer.get_io_service().post(boost::bind(
-+			libtorrent::get_io_service(m_timer).post(boost::bind(
- 				&connection_queue::on_try_connect, this));
- 		return true;
- 	}
---- libtorrent-rasterbar-1.0.11/src/http_connection.cpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/src/http_connection.cpp	2019-04-27 20:13:23.254901585 +0200
-@@ -134,14 +134,14 @@
+@@ -162,7 +162,7 @@
  		)
  	{
- 		error_code ec(errors::unsupported_url_protocol);
--		m_resolver.get_io_service().post(boost::bind(&http_connection::callback
-+		libtorrent::get_io_service(m_resolver).post(boost::bind(&http_connection::callback
- 			, me, ec, (char*)0, 0));
+ 		error_code err(errors::unsupported_url_protocol);
+-		m_timer.get_io_service().post(boost::bind(&http_connection::callback
++		libtorrent::get_io_service(m_timer).post(boost::bind(&http_connection::callback
+ 			, me, err, static_cast<char*>(NULL), 0));
  		return;
  	}
+@@ -263,7 +263,7 @@
  
  	if (ec)
  	{
--		m_resolver.get_io_service().post(boost::bind(&http_connection::callback
-+		libtorrent::get_io_service(m_resolver).post(boost::bind(&http_connection::callback
- 			, me, ec, (char*)0, 0));
+-		m_timer.get_io_service().post(boost::bind(&http_connection::callback
++		libtorrent::get_io_service(m_timer).post(boost::bind(&http_connection::callback
+ 			, me, ec, static_cast<char*>(NULL), 0));
  		return;
  	}
-@@ -244,7 +244,7 @@
+@@ -303,7 +303,7 @@
  
- 	if (ec)
- 	{
--		m_resolver.get_io_service().post(boost::bind(&http_connection::callback
-+		libtorrent::get_io_service(m_resolver).post(boost::bind(&http_connection::callback
- 			, me, ec, (char*)0, 0));
- 		return;
- 	}
-@@ -284,7 +284,7 @@
- #if TORRENT_USE_I2P
- 		if (is_i2p && i2p_conn->proxy().type != proxy_settings::i2p_proxy)
- 		{
--			m_resolver.get_io_service().post(boost::bind(&http_connection::callback
-+			libtorrent::get_io_service(m_resolver).post(boost::bind(&http_connection::callback
- 				, me, error_code(errors::no_i2p_router, get_libtorrent_category()), (char*)0, 0));
- 			return;
- 		}
-@@ -312,8 +312,7 @@
- 		{
- 			if (m_ssl_ctx == 0)
+ 			if (i2p_conn->proxy().type != settings_pack::i2p_proxy)
  			{
--				m_ssl_ctx = new (std::nothrow) boost::asio::ssl::context(
--					m_resolver.get_io_service(), asio::ssl::context::sslv23_client);
-+				m_ssl_ctx = new (std::nothrow) boost::asio::ssl::context(asio::ssl::context::sslv23_client);
- 				if (m_ssl_ctx)
- 				{
- 					m_own_ssl_context = true;
-@@ -325,7 +324,7 @@
- 			userdata = m_ssl_ctx;
- 		}
- #endif
--		instantiate_connection(m_resolver.get_io_service()
-+		instantiate_connection(libtorrent::get_io_service(m_resolver)
- 			, proxy ? *proxy : null_proxy, m_sock, userdata);
- 
- 		if (m_bind_addr != address_v4::any())
-@@ -335,7 +334,7 @@
- 			m_sock.bind(tcp::endpoint(m_bind_addr, 0), ec);
- 			if (ec)
- 			{
--				m_resolver.get_io_service().post(boost::bind(&http_connection::callback
-+				libtorrent::get_io_service(m_resolver).post(boost::bind(&http_connection::callback
- 					, me, ec, (char*)0, 0));
+-				m_timer.get_io_service().post(boost::bind(&http_connection::callback
++				libtorrent::get_io_service(m_timer).post(boost::bind(&http_connection::callback
+ 					, me, error_code(errors::no_i2p_router), static_cast<char*>(NULL), 0));
  				return;
  			}
-@@ -344,7 +343,7 @@
+@@ -337,7 +337,7 @@
+ 					m_ssl_ctx->set_verify_mode(ssl::context::verify_none, ec);
+ 					if (ec)
+ 					{
+-						m_timer.get_io_service().post(boost::bind(&http_connection::callback
++						libtorrent::get_io_service(m_timer).post(boost::bind(&http_connection::callback
+ 								, me, ec, static_cast<char*>(NULL), 0));
+ 						return;
+ 					}
+@@ -349,7 +349,7 @@
+ 		// assume this is not a tracker connection. Tracker connections that
+ 		// shouldn't be subject to the proxy should pass in NULL as the proxy
+ 		// pointer.
+-		instantiate_connection(m_timer.get_io_service()
++		instantiate_connection(libtorrent::get_io_service(m_timer)
+ 			, proxy ? *proxy : null_proxy, m_sock, userdata, NULL, false, false);
+ 
+ 		if (m_bind_addr)
+@@ -358,7 +358,7 @@
+ 			m_sock.bind(tcp::endpoint(*m_bind_addr, 0), ec);
+ 			if (ec)
+ 			{
+-				m_timer.get_io_service().post(boost::bind(&http_connection::callback
++				libtorrent::get_io_service(m_timer).post(boost::bind(&http_connection::callback
+ 					, me, ec, static_cast<char*>(NULL), 0));
+ 				return;
+ 			}
+@@ -367,7 +367,7 @@
  		setup_ssl_hostname(m_sock, hostname, ec);
  		if (ec)
  		{
--			m_resolver.get_io_service().post(boost::bind(&http_connection::callback
-+			libtorrent::get_io_service(m_resolver).post(boost::bind(&http_connection::callback
- 				, me, ec, (char*)0, 0));
+-			m_timer.get_io_service().post(boost::bind(&http_connection::callback
++			libtorrent::get_io_service(m_timer).post(boost::bind(&http_connection::callback
+ 				, me, ec, static_cast<char*>(NULL), 0));
  			return;
  		}
 --- libtorrent-rasterbar-1.0.11/src/natpmp.cpp.orig	2017-02-04 19:16:33.000000000 +0100
@@ -332,189 +152,31 @@
  	if (ec)
  	{
  		char msg[200];
---- libtorrent-rasterbar-1.0.11/src/peer_connection.cpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/src/peer_connection.cpp	2019-04-28 15:18:57.157948755 +0200
-@@ -470,9 +470,8 @@
- 
- 		if (!m_outgoing)
- 		{
--			tcp::socket::non_blocking_io ioc(true);
- 			error_code ec;
--			m_socket->io_control(ioc, ec);
-+			m_socket->non_blocking(true, ec);
- 			if (ec)
- 			{
- 				disconnect(ec);
-@@ -5651,11 +5650,10 @@
- 
- 		// set the socket to non-blocking, so that we can
- 		// read the entire buffer on each read event we get
--		tcp::socket::non_blocking_io ioc(true);
- #if defined TORRENT_VERBOSE_LOGGING
- 		peer_log("*** SET NON-BLOCKING");
- #endif
--		m_socket->io_control(ioc, ec);
-+		m_socket->non_blocking(true, ec);
- 		if (ec)
- 		{
- 			disconnect(ec);
---- libtorrent-rasterbar-1.0.11/src/session_impl.cpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/src/session_impl.cpp	2019-04-28 07:48:59.367988085 +0200
-@@ -629,7 +629,7 @@
- 		, m_files(40)
- 		, m_io_service()
- #ifdef TORRENT_USE_OPENSSL
--		, m_ssl_ctx(m_io_service, asio::ssl::context::sslv23)
-+		, m_ssl_ctx(asio::ssl::context::sslv23)
- #endif
- 		, m_alerts(m_settings.alert_queue_size, alert_mask)
- 		, m_disk_thread(m_io_service, boost::bind(&session_impl::on_disk_queue, this), m_files)
---- libtorrent-rasterbar-1.0.11/src/torrent.cpp.orig	2017-02-04 19:17:49.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/src/torrent.cpp	2019-04-28 10:03:43.652418700 +0200
-@@ -1382,7 +1382,7 @@
- 		// inject the root certificate, and no other, to
- 		// verify other peers against
- 		boost::shared_ptr<context> ctx(
--			new (std::nothrow) context(m_ses.m_io_service, context::sslv23));
-+			new (std::nothrow) context(context::sslv23));
- 
- 		if (!ctx)
- 		{
-@@ -1419,7 +1419,7 @@
- 			return;
- 		}
- 
--		SSL_CTX* ssl_ctx = ctx->impl();
-+		SSL_CTX* ssl_ctx = ctx->native_handle();
- 		// create a new x.509 certificate store
- 		X509_STORE* cert_store = X509_STORE_new();
- 		if (!cert_store)
---- libtorrent-rasterbar-1.0.11/src/udp_socket.cpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/src/udp_socket.cpp	2019-04-28 10:11:50.034602961 +0200
-@@ -769,8 +769,7 @@
- 
- 		m_ipv4_sock.bind(ep, ec);
- 		if (ec) return;
--		udp::socket::non_blocking_io ioc(true);
--		m_ipv4_sock.io_control(ioc, ec);
-+		m_ipv4_sock.non_blocking(true, ec);
- 		if (ec) return;
- 		setup_read(&m_ipv4_sock);
- 	}
-@@ -793,8 +792,7 @@
- 
- 		m_ipv6_sock.bind(ep6, ec);
- 		if (ec) return;
--		udp::socket::non_blocking_io ioc(true);
--		m_ipv6_sock.io_control(ioc, ec);
-+		m_ipv6_sock.non_blocking(true, ec);
- 		if (ec) return;
- 		setup_read(&m_ipv6_sock);
- 	}
---- libtorrent-rasterbar-1.0.11/include/libtorrent/export.hpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/include/libtorrent/export.hpp	2019-04-28 10:52:35.642969805 +0200
-@@ -33,19 +33,7 @@
- #ifndef TORRENT_EXPORT_HPP_INCLUDED
- #define TORRENT_EXPORT_HPP_INCLUDED
- 
--#if !defined(BOOST_COMPILER_CONFIG) && !defined(BOOST_NO_COMPILER_CONFIG)
--#  include <boost/config/select_compiler_config.hpp>
--#endif
--#ifdef BOOST_COMPILER_CONFIG
--#  include BOOST_COMPILER_CONFIG
--#endif
--
--#if !defined(BOOST_PLATFORM_CONFIG) && !defined(BOOST_NO_PLATFORM_CONFIG)
--#  include <boost/config/select_platform_config.hpp>
--#endif
--#ifdef BOOST_PLATFORM_CONFIG
--#  include BOOST_PLATFORM_CONFIG
--#endif
-+#include <boost/config.hpp>
- 
- // backwards compatibility with older versions of boost
- #if !defined BOOST_SYMBOL_EXPORT && !defined BOOST_SYMBOL_IMPORT
---- libtorrent-rasterbar-1.0.11/src/kademlia/routing_table.cpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/src/kademlia/routing_table.cpp	2019-04-28 11:31:16.984938976 +0200
-@@ -37,6 +37,7 @@
- #include <numeric>
- #include <boost/cstdint.hpp>
- #include <boost/bind.hpp>
-+#include <boost/next_prior.hpp>
- 
- #include "libtorrent/kademlia/routing_table.hpp"
- #include "libtorrent/broadcast_socket.hpp" // for cidr_distance
---- libtorrent-rasterbar-1.0.11/include/libtorrent/kademlia/observer.hpp.orig	2017-02-04 19:16:33.000000000 +0100
-+++ libtorrent-rasterbar-1.0.11/include/libtorrent/kademlia/observer.hpp	2019-04-28 11:35:28.661490720 +0200
-@@ -37,6 +37,7 @@
- #include <boost/detail/atomic_count.hpp>
- #include <boost/intrusive_ptr.hpp>
- #include <boost/cstdint.hpp>
-+#include <boost/noncopyable.hpp>
- #include <libtorrent/ptime.hpp>
- #include <libtorrent/address.hpp>
- 
---- libtorrent-rasterbar-1.0.11/bindings/python/src/error_code.cpp.orig	2019-04-28 14:38:10.559615501 +0200
-+++ libtorrent-rasterbar-1.0.11/bindings/python/src/error_code.cpp	2019-04-28 14:38:28.853907959 +0200
-@@ -40,11 +40,42 @@
- using namespace libtorrent;
- using boost::system::error_category;
- 
-+struct category_holder
-+{
-+	category_holder(boost::system::error_category const& cat) : m_cat(&cat) {}
-+	char const* name() const { return m_cat->name(); }
-+	std::string message(int const v) const { return m_cat->message(v); }
-+
-+	friend bool operator==(category_holder const lhs, category_holder const rhs)
-+	{ return *lhs.m_cat == *rhs.m_cat; }
-+
-+	friend bool operator!=(category_holder const lhs, category_holder const rhs)
-+	{ return *lhs.m_cat != *rhs.m_cat; }
-+
-+	friend bool operator<(category_holder const lhs, category_holder const rhs)
-+	{ return *lhs.m_cat < *rhs.m_cat; }
-+
-+	boost::system::error_category const& ref() const { return *m_cat; }
-+	operator boost::system::error_category const&() const { return *m_cat; }
-+private:
-+	boost::system::error_category const* m_cat;
-+};
-+
-+void error_code_assign(boost::system::error_code& me, int const v, category_holder const cat)
-+{
-+	me.assign(v, cat.ref());
-+}
-+
-+category_holder error_code_category(boost::system::error_code const& me)
-+{
-+	return category_holder(me.category());
-+}
-+
- void bind_error_code()
+--- libtorrent-rasterbar-1.1.11/src/lsd.cpp.orig	2018-11-18 13:55:50.000000000 +0100
++++ libtorrent-rasterbar-1.1.11/src/lsd.cpp	2019-04-28 19:35:37.014019062 +0200
+@@ -112,12 +112,12 @@
+ void lsd::start(error_code& ec)
  {
--    class_<boost::system::error_category, boost::noncopyable>("error_category", no_init)
--        .def("name", &error_category::name)
--        .def("message", &error_category::message)
-+    class_<category_holder>("error_category", no_init)
-+        .def("name", &category_holder::name)
-+        .def("message", &category_holder::message)
-         .def(self == self)
-         .def(self < self)
-         .def(self != self)
-@@ -52,12 +83,11 @@
+ 	m_socket.open(boost::bind(&lsd::on_announce, self(), _1, _2, _3)
+-		, m_broadcast_timer.get_io_service(), ec);
++		, libtorrent::get_io_service(m_broadcast_timer), ec);
+ 	if (ec) return;
  
-     class_<error_code>("error_code")
-         .def(init<>())
--        .def("message", &error_code::message)
-+        .def("message", static_cast<std::string (error_code::*)() const>(&error_code::message))
-         .def("value", &error_code::value)
-         .def("clear", &error_code::clear)
--        .def("category", &error_code::category
--           , return_internal_reference<>())
--        .def("assign", &error_code::assign)
-+        .def("category", &error_code_category)
-+        .def("assign", &error_code_assign)
-         ;
+ #if TORRENT_USE_IPV6
+ 	m_socket6.open(boost::bind(&lsd::on_announce, self(), _1, _2, _3)
+-		, m_broadcast_timer.get_io_service(), ec);
++		, libtorrent::get_io_service(m_broadcast_timer), ec);
+ #endif
+ }
  
-     def("get_libtorrent_category", &get_libtorrent_category
+--- libtorrent-rasterbar-1.1.11/src/upnp.cpp.orig	2018-11-18 13:55:54.000000000 +0100
++++ libtorrent-rasterbar-1.1.11/src/upnp.cpp	2019-04-28 20:23:06.875246705 +0200
+@@ -135,7 +135,7 @@
+ {
+ 	error_code ec;
+ 	m_socket.open(boost::bind(&upnp::on_reply, self(), _1, _2, _3)
+-		, m_refresh_timer.get_io_service(), ec);
++		, libtorrent::get_io_service(m_refresh_timer), ec);
+ 
+ 	m_mappings.reserve(10);
+ }

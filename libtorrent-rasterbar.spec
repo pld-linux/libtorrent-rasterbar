@@ -5,13 +5,13 @@ Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
-Version:	1.0.11
-Release:	3
+Version:	1.1.11
+Release:	1
 Epoch:		2
 License:	BSD
 Group:		Libraries
-Source0:	https://github.com/arvidn/libtorrent/releases/download/libtorrent-%{tagver}/%{name}-%{version}.tar.gz
-# Source0-md5:	f49e43286a64e8bbdef9ea59baa78b55
+Source0:	https://github.com/arvidn/libtorrent/releases/download/libtorrent_%{tagver}/%{name}-%{version}.tar.gz
+# Source0-md5:	80e76c6fe6a57cf262afe09583c4dda2
 Patch0:		%{name}-boost.patch
 URL:		http://www.rasterbar.com/products/libtorrent/
 BuildRequires:	GeoIP-devel
@@ -141,16 +141,16 @@ find -type f -regex '.*\.[hc]pp' | xargs chmod a-x
 	LIBS="-lpthread -lrt" \
 	--disable-silent-rules \
 	--enable-python-binding \
-	--with-boost-libdir=%{_libdir} \
-	--with-boost-system=boost_system \
-	--with-boost-filesystem=boost_filesystem \
-	--with-boost-thread=boost_thread \
-	--with-boost-regex=boost_regex \
-	--with-boost-program-options=boost_program_options \
 	--with-asio=system \
-	--with-zlib=system \
+	--with-boost-libdir=%{_libdir} \
+	--with-boost-filesystem=boost_filesystem \
+	--with-boost-program-options=boost_program_options \
+	--with-boost-regex=boost_regex \
+	--with-boost-system=boost_system \
+	--with-boost-thread=boost_thread \
 	--with-libgeoip=system \
-	--with-ssl
+	--with-ssl \
+	--with-zlib=system
 
 %{__make}
 
@@ -170,7 +170,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog COPYING
 %attr(755,root,root) %{_libdir}/libtorrent-rasterbar.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libtorrent-rasterbar.so.8
+%attr(755,root,root) %ghost %{_libdir}/libtorrent-rasterbar.so.9
 
 %files devel
 %defattr(644,root,root,755)
