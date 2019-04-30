@@ -1,5 +1,4 @@
-#
-# WARNING: Do not upgrade to 1.1.x, breaks qbittorrent
+# WARNING: qbittorrent 3.x uses 1.0.x, 4.x 1.1.x (see DEVEL-1.1 branch), there is no version ready for 1.2.x (DEVEL-1.2 branch)
 #
 %define		tagver	%(echo %{version} | tr . _)
 Summary:	A C++ BitTorrent library
