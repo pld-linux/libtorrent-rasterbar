@@ -1,25 +1,25 @@
-# WARNING: qbittorrent 3.x uses 1.0.x (libtorrent-1.0 branch), 4.x 1.1.x (master), there is no version ready for 1.2.x (DEVEL-1.2 branch)
+# WARNING: qbittorrent 4.1.x uses libtorrent-rasterbar 1.1.x (master), 4.2.x allows 1.2.x (DEVEL-1.2 branch)
 #
 %define		tagver	%(echo %{version} | tr . _)
 Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
-Version:	1.2.0
+Version:	1.2.7
 Release:	1
 Epoch:		2
 License:	BSD
 Group:		Libraries
+#Source0Download: https://github.com/arvidn/libtorrent/releases
 Source0:	https://github.com/arvidn/libtorrent/releases/download/libtorrent_%{tagver}/%{name}-%{version}.tar.gz
-# Source0-md5:	4bd50b9b773f2f206c90a77bd911fae5
-Patch0:		%{name}-boost.patch
+# Source0-md5:	0c5e9d3c141704d1801f6da65c4554fe
 URL:		http://www.rasterbar.com/products/libtorrent/
 BuildRequires:	GeoIP-devel
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
-BuildRequires:	boost-devel >= 1.36
-BuildRequires:	boost-python-devel >= 1.36
-BuildRequires:	libstdc++-devel
+BuildRequires:	boost-devel >= 1.58
+BuildRequires:	boost-python-devel >= 1.58
+BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig >= 1:0.20
@@ -67,7 +67,8 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki %{name}
 License:	BSD, zlib/libpng License, Boost Software License
 Group:		Development/Libraries
 Requires:	%{name} = %{epoch}:%{version}-%{release}
-Requires:	boost-devel
+Requires:	boost-devel >= 1.58
+Requires:	libstdc++-devel >= 6:4.7
 Requires:	openssl-devel
 Obsoletes:	rb_libtorrent-devel
 
@@ -122,7 +123,6 @@ Wiązania Pythona do biblioteki libtorrent-rasterbar.
 
 %prep
 %setup -q
-%patch0 -p1
 
 ## Some of the sources and docs are executable, which makes rpmlint against
 ## the resulting -debuginfo and -devel packages, respectively, quite angry. :]
@@ -177,8 +177,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/
 %attr(755,root,root) %{_libdir}/libtorrent-rasterbar.so
 %{_libdir}/libtorrent-rasterbar.la
-%{_pkgconfigdir}/libtorrent-rasterbar.pc
 %{_includedir}/libtorrent
+%{_pkgconfigdir}/libtorrent-rasterbar.pc
+%{_datadir}/cmake/Modules/FindLibtorrentRasterbar.cmake
 
 %files static
 %defattr(644,root,root,755)
