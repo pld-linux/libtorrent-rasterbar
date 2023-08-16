@@ -6,7 +6,7 @@ Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
 Version:	1.2.7
-Release:	8.1
+Release:	9
 Epoch:		2
 License:	BSD
 Group:		Libraries
@@ -157,6 +157,10 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# fix python bindings install mixup
+%{__mv} $RPM_BUILD_ROOT%{py3_sitedir}/python_libtorrent-*.egg/* $RPM_BUILD_ROOT%{py3_sitedir}/
+%{__mv} $RPM_BUILD_ROOT%{py3_sitedir}/{EGG-INFO,libtorrent-%{version}-py%{py3_ver}.egg-info}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -185,4 +189,4 @@ rm -rf $RPM_BUILD_ROOT
 %files -n python3-libtorrent-rasterbar
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py3_sitedir}/libtorrent.*.so
-%{py3_sitedir}/python_libtorrent-*.egg-info
+%{py3_sitedir}/libtorrent-*.egg-info
