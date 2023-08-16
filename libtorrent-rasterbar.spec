@@ -1,17 +1,12 @@
 # WARNING: qbittorrent 4.1.x uses 1.1.x/1.2.x, not 2.x
 #
-# Conditional build:
-%bcond_without	python2 # CPython 2.x module
-%bcond_without	python3 # CPython 3.x module
-
-#
 %define		tagver	%(echo %{version} | tr . _)
 Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
 Version:	1.2.7
-Release:	8
+Release:	8.1
 Epoch:		2
 License:	BSD
 Group:		Libraries
@@ -27,16 +22,9 @@ BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig >= 1:0.20
-%if %{with python2}
-BuildRequires:	boost-python-devel >= 1.58
-BuildRequires:	python-devel >= 1:2.4
-BuildRequires:	python-modules >= 1:2.4
-%endif
-%if %{with python3}
 BuildRequires:	boost-python3-devel >= 1.58
 BuildRequires:	python3-devel >= 1:3.6
 BuildRequires:	python3-modules >= 1:3.6
-%endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	sed >= 4.0
 BuildRequires:	util-linux
@@ -44,6 +32,8 @@ BuildRequires:	which
 BuildRequires:	zlib-devel
 Obsoletes:	rb_libtorrent < 0.13
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		boost_py3ver %(echo %{py3_ver} | tr -d .)
 
 %description
 libtorrent-rasterbar is a C++ library that aims to be a good
@@ -121,23 +111,12 @@ Statikus libtorrent-rasterbar könyvtár.
 %description static -l pl.UTF-8
 Statyczna biblioteka libtorrent-rasterbar.
 
-%package -n python-libtorrent-rasterbar
-Summary:	Python bindings for libtorrent-rasterbar
-Summary(pl.UTF-8):	Wiązania Pythona do biblioteki libtorrent-rasterbar
-Group:		Libraries/Python
-Requires:	%{name} = %{epoch}:%{version}-%{release}
-
-%description -n python-libtorrent-rasterbar
-Python bindings for libtorrent-rasterbar.
-
-%description -n python-libtorrent-rasterbar -l pl.UTF-8
-Wiązania Pythona do biblioteki libtorrent-rasterbar.
-
 %package -n python3-libtorrent-rasterbar
 Summary:	Python 3 bindings for libtorrent-rasterbar
 Summary(pl.UTF-8):	Wiązania Pythona 3 do biblioteki libtorrent-rasterbar
 Group:		Libraries/Python
 Requires:	%{name} = %{epoch}:%{version}-%{release}
+Obsoletes:	python-libtorrent-rasterbar < 2:1.2.7-8
 
 %description -n python3-libtorrent-rasterbar
 Python 3 bindings for libtorrent-rasterbar.
@@ -163,48 +142,20 @@ find -type f -regex '.*\.[hc]pp' | xargs chmod a-x
 %{__automake}
 %configure \
 	LIBS="-lpthread -lrt" \
+	PYTHON=%{__python3} \
 	--disable-silent-rules \
-	--disable-python-binding \
-	--with-asio=system \
+	--enable-python-binding \
 	--with-boost-libdir=%{_libdir} \
-	--with-boost-filesystem=boost_filesystem \
-	--with-boost-program-options=boost_program_options \
-	--with-boost-regex=boost_regex \
 	--with-boost-system=boost_system \
-	--with-boost-thread=boost_thread \
-	--with-libgeoip=system \
-	--with-ssl \
-	--with-zlib=system
+	--with-boost-python=boost_python%{boost_py3ver}
 
 %{__make}
-
-cd bindings/python
-
-%if %{with python2}
-%py_build
-%endif
-
-%if %{with python3}
-%py3_build
-%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
-
-cd bindings/python
-
-%if %{with python2}
-%py_install
-
-%py_postclean
-%endif
-
-%if %{with python3}
-%py3_install
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -231,16 +182,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libtorrent-rasterbar.a
 
-%if %{with python2}
-%files -n python-libtorrent-rasterbar
-%defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/libtorrent.so
-%{py_sitedir}/python_libtorrent-*.egg-info
-%endif
-
-%if %{with python3}
 %files -n python3-libtorrent-rasterbar
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py3_sitedir}/libtorrent.*.so
 %{py3_sitedir}/python_libtorrent-*.egg-info
-%endif
