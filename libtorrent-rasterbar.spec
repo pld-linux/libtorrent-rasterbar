@@ -1,34 +1,30 @@
-# WARNING: qbittorrent 4.1.x uses 1.1.x/1.2.x, not 2.x
-#
-%define		tagver	%(echo %{version} | tr . _)
 Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
-Version:	1.2.7
-Release:	9
+Version:	2.0.10
+Release:	1
 Epoch:		2
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/arvidn/libtorrent/releases
-Source0:	https://github.com/arvidn/libtorrent/releases/download/libtorrent_%{tagver}/%{name}-%{version}.tar.gz
-# Source0-md5:	0c5e9d3c141704d1801f6da65c4554fe
+Source0:	https://github.com/arvidn/libtorrent/releases/download/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	bfe6fff84add3dc5d51e10547f85e217
 URL:		http://www.rasterbar.com/products/libtorrent/
-BuildRequires:	GeoIP-devel
-BuildRequires:	autoconf >= 2.63
-BuildRequires:	automake >= 1:1.11
-BuildRequires:	boost-devel >= 1.58
-BuildRequires:	libstdc++-devel >= 6:4.7
-BuildRequires:	libtool >= 2:2.2.6
+BuildRequires:	boost-devel >= 1.67
+BuildRequires:	boost-python3-devel >= 1.67
+BuildRequires:	cmake >= 3.16.0
+BuildRequires:	libstdc++-devel >= 6:5
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig >= 1:0.20
-BuildRequires:	boost-python3-devel >= 1.58
+BuildRequires:	python3 >= 1:3.6
 BuildRequires:	python3-devel >= 1:3.6
 BuildRequires:	python3-modules >= 1:3.6
+BuildRequires:	python3-setuptools
 BuildRequires:	rpm-pythonprov
+BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	sed >= 4.0
 BuildRequires:	util-linux
-BuildRequires:	which
 BuildRequires:	zlib-devel
 Obsoletes:	rb_libtorrent < 0.13
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -69,9 +65,10 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki %{name}
 License:	BSD, zlib/libpng License, Boost Software License
 Group:		Development/Libraries
 Requires:	%{name} = %{epoch}:%{version}-%{release}
-Requires:	boost-devel >= 1.58
-Requires:	libstdc++-devel >= 6:4.7
+Requires:	boost-devel >= 1.67
+Requires:	libstdc++-devel >= 6:5
 Requires:	openssl-devel
+Obsoletes:	libtorrent-rasterbar-static < 2:2.0.10
 Obsoletes:	rb_libtorrent-devel < 0.13
 
 %description    devel
@@ -94,22 +91,6 @@ rozwijania aplikacji używających libtorrent-rasterbar.
 Różne pliki źródłowe i nagłówki dostarczone z tym pakietem są
 licencjonowane pod zmienioną licencją BSD, zlib/libpng i Boost Public
 License.
-
-%package static
-Summary:	Static %{name} library
-Summary(pl.UTF-8):	Statyczna biblioteka %{name}
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
-Obsoletes:	rb_libtorrent-static < 0.13
-
-%description static
-Static libtorrent-rasterbar library.
-
-%description static -l hu.UTF-8
-Statikus libtorrent-rasterbar könyvtár.
-
-%description static -l pl.UTF-8
-Statyczna biblioteka libtorrent-rasterbar.
 
 %package -n python3-libtorrent-rasterbar
 Summary:	Python 3 bindings for libtorrent-rasterbar
@@ -136,30 +117,17 @@ find -type f -regex '.*\.[hc]pp' | xargs chmod a-x
 %{__rm} docs/*.rst
 
 %build
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__automake}
-%configure \
-	LIBS="-lpthread -lrt" \
-	PYTHON=%{__python3} \
-	--disable-silent-rules \
-	--enable-python-binding \
-	--with-boost-libdir=%{_libdir} \
-	--with-boost-system=boost_system \
-	--with-boost-python=boost_python%{boost_py3ver}
+%cmake -B build \
+	-Dpython-bindings:BOOL=ON \
+	-Dpython-egg-info:BOOL=ON
 
-%{__make}
+%{__make} -C build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
-
-# fix python bindings install mixup
-%{__mv} $RPM_BUILD_ROOT%{py3_sitedir}/python_libtorrent-*.egg/* $RPM_BUILD_ROOT%{py3_sitedir}/
-%{__mv} $RPM_BUILD_ROOT%{py3_sitedir}/{EGG-INFO,libtorrent-%{version}-py%{py3_ver}.egg-info}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -171,22 +139,18 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog COPYING
 %attr(755,root,root) %{_libdir}/libtorrent-rasterbar.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libtorrent-rasterbar.so.10
+%attr(755,root,root) %ghost %{_libdir}/libtorrent-rasterbar.so.2.0
 
 %files devel
 %defattr(644,root,root,755)
 %doc docs/
 %attr(755,root,root) %{_libdir}/libtorrent-rasterbar.so
-%{_libdir}/libtorrent-rasterbar.la
 %{_includedir}/libtorrent
 %{_pkgconfigdir}/libtorrent-rasterbar.pc
 %{_datadir}/cmake/Modules/FindLibtorrentRasterbar.cmake
-
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libtorrent-rasterbar.a
+%{_libdir}/cmake/LibtorrentRasterbar
 
 %files -n python3-libtorrent-rasterbar
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py3_sitedir}/libtorrent.*.so
-%{py3_sitedir}/libtorrent-*.egg-info
+%{py3_sitedir}/libtorrent.egg-info
