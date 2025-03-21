@@ -3,7 +3,7 @@ Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
 Version:	2.0.11
-Release:	3
+Release:	4
 Epoch:		2
 License:	BSD
 Group:		Libraries
