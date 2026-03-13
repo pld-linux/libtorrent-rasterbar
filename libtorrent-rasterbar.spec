@@ -2,24 +2,24 @@ Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
-Version:	2.0.11
-Release:	4
+Version:	2.0.12
+Release:	1
 Epoch:		2
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/arvidn/libtorrent/releases
 Source0:	https://github.com/arvidn/libtorrent/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	dc497b6bb4de4304694fd9ed87257466
+# Source0-md5:	a7b6b409a5112ba01f3e62dd3179d714
 URL:		http://www.rasterbar.com/products/libtorrent/
 BuildRequires:	boost-devel >= 1.67
 BuildRequires:	boost-python3-devel >= 1.67
-BuildRequires:	cmake >= 3.16.0
+BuildRequires:	cmake >= 3.20.0
 BuildRequires:	libstdc++-devel >= 6:5
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig >= 1:0.20
-BuildRequires:	python3 >= 1:3.6
-BuildRequires:	python3-devel >= 1:3.6
-BuildRequires:	python3-modules >= 1:3.6
+BuildRequires:	python3 >= 1:3.9
+BuildRequires:	python3-devel >= 1:3.9
+BuildRequires:	python3-modules >= 1:3.9
 BuildRequires:	python3-setuptools
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.605
@@ -119,7 +119,8 @@ find -type f -regex '.*\.[hc]pp' | xargs chmod a-x
 %build
 %cmake -B build \
 	-Dpython-bindings:BOOL=ON \
-	-Dpython-egg-info:BOOL=ON
+	-Dpython-egg-info:BOOL=ON \
+	-Dpython-install-system-dir:BOOL=ON
 
 %{__make} -C build
 
