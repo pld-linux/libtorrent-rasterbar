@@ -2,15 +2,15 @@ Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
-Version:	2.0.13
-Release:	2
+Version:	2.0.15
+Release:	1
 Epoch:		2
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/arvidn/libtorrent/releases
 Source0:	https://github.com/arvidn/libtorrent/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	ee4249f7384508de78bb5bad3c5cacb7
-URL:		http://www.rasterbar.com/products/libtorrent/
+# Source0-md5:	05cf7c3155a23d219f3924ce08f55b41
+URL:		https://www.rasterbar.com/products/libtorrent/
 BuildRequires:	boost-devel >= 1.67
 BuildRequires:	boost-python3-devel >= 1.67
 BuildRequires:	cmake >= 3.20.0
@@ -117,7 +117,10 @@ find -type f -regex '.*\.[hc]pp' | xargs chmod a-x
 %{__rm} docs/*.rst
 
 %build
+# .pc file generation expects relative CMAKE_INSTALL_{INCLUDE,LIB}DIR
 %cmake -B build \
+	-DCMAKE_INSTALL_INCLUDEDIR=include \
+	-DCMAKE_INSTALL_LIBDIR=%{_lib} \
 	-Dpython-bindings:BOOL=ON \
 	-Dpython-egg-info:BOOL=ON \
 	-Dpython-install-system-dir:BOOL=ON
@@ -138,14 +141,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog COPYING
-%attr(755,root,root) %{_libdir}/libtorrent-rasterbar.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libtorrent-rasterbar.so.2.0
+%doc AUTHORS COPYING ChangeLog README.rst
+%{_libdir}/libtorrent-rasterbar.so.*.*.*
+%ghost %{_libdir}/libtorrent-rasterbar.so.2.0
 
 %files devel
 %defattr(644,root,root,755)
-%doc docs/
-%attr(755,root,root) %{_libdir}/libtorrent-rasterbar.so
+%doc docs/*
+%{_libdir}/libtorrent-rasterbar.so
 %{_includedir}/libtorrent
 %{_pkgconfigdir}/libtorrent-rasterbar.pc
 %{_datadir}/cmake/Modules/FindLibtorrentRasterbar.cmake
@@ -153,5 +156,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n python3-libtorrent-rasterbar
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py3_sitedir}/libtorrent.*.so
+%{py3_sitedir}/libtorrent.cpython-*.so
 %{py3_sitedir}/libtorrent.egg-info
