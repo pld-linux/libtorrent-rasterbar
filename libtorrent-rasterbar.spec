@@ -1,3 +1,4 @@
+# TODO: kill -I/ from .pc file (comes from Boost::headers, needs fix for boost cmake configs)
 Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
