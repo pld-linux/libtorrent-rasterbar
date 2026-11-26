@@ -3,14 +3,14 @@ Summary:	A C++ BitTorrent library
 Summary(hu.UTF-8):	C++ BitTorrent könyvtár
 Summary(pl.UTF-8):	Biblioteka BitTorrenta napisana w C++
 Name:		libtorrent-rasterbar
-Version:	2.0.15
-Release:	2
+Version:	2.0.16
+Release:	1
 Epoch:		2
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/arvidn/libtorrent/releases
 Source0:	https://github.com/arvidn/libtorrent/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	05cf7c3155a23d219f3924ce08f55b41
+# Source0-md5:	93a2d53c8fd92774a95a5764485737be
 URL:		https://www.rasterbar.com/products/libtorrent/
 BuildRequires:	boost-devel >= 1.67
 BuildRequires:	boost-python3-devel >= 1.67
